@@ -1,0 +1,24 @@
+name: seaside chat - scheduled example workflow
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 min
+  workflow_dispatch:  # use for manual runs 
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+          activate-environment: seaside-env
+          auto-activate-base: false
+
+      - name: Run script
+        run: |
+          python app.py --print
