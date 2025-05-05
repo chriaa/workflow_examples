@@ -1,0 +1,52 @@
+name: github actions intro pt 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+# This creates an artifact called output.txt that is available for download
+  example-artifacts-job-1:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: testing
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Create Conda environment from environment.yaml
+      run: |
+        sudo apt-get install -y conda
+        conda env create -f environment.yaml
+        source activate my_env
+        python --version
+
+    - name: Use GitHub Secrets
+      run: echo "The secret value is ${{ secrets.MY_SECRET }}"
+
+    - name: Save user input to output.txt
+      run: echo "${{ github.event.inputs.username }}" > output_test.txt
+
+    - name: Upload output.txt as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: output_test_example
+        path: output_test.txt
+
+# This calls the composite action and appends to the original output_test file
+  example-artifacts-job-2:
+    name: Modify file using composite action
+    needs: example-artifacts-job-1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use custom composite action
+        uses: ./.github/actions/example
+        with:
+          artifact-name: ${{ needs.example-artifacts-job-1.outputs.output_test_example }}
+  

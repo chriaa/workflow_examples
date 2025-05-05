@@ -1,0 +1,27 @@
+name: Modify output_text.txt and re-upload
+description: Downloads output_text.txt, modifies it, and re-uploads
+
+inputs:
+  artifact-name:
+    description: Name of the artifact to download
+    required: true
+    default: output_test_example
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+
+    - name: Append text to file
+      shell: bash
+      run: |
+        echo "this is a composite action" >> output_text.txt
+
+    - name: Upload modified artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: modified_output_artifact
+        path: output_text.txt

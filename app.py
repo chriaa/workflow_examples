@@ -6,8 +6,8 @@ import pytz
 
 def main():
 
-    now_sf = datetime.now(pytz.timezone('America/New_York')).strftime("%-I:%M %p")
-    now_wh = datetime.now(pytz.timezone('America/Los_Angeles')).strftime("%-I:%M %p")
+    now_wh = datetime.now(pytz.timezone('America/New_York')).strftime("%-I:%M %p")
+    now_sf = datetime.now(pytz.timezone('America/Los_Angeles')).strftime("%-I:%M %p")
 
     message = f"Hello world, the time is now {now_sf} in San Francisco and {now_wh} in Woods Hole."
 
